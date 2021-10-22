@@ -1,0 +1,91 @@
+step "Production Approval - QA Manager" {
+
+    action {
+        action_type = "Octopus.Manual"
+        environments = ["Approval"]
+        properties = {
+            Octopus.Action.Manual.BlockConcurrentDeployments = "False"
+            Octopus.Action.Manual.Instructions = "Please approve or cancel the deployment of #{Octopus.Project.Name} #{Octopus.Release.Number} to production"
+            Octopus.Action.Manual.ResponsibleTeamIds = "Octopus Managers"
+        }
+        worker_pool_variable = ""
+    }
+}
+
+step "Production Approval - Development Manager" {
+    start_trigger = "StartWithPrevious"
+
+    action {
+        action_type = "Octopus.Manual"
+        environments = ["Approval"]
+        properties = {
+            Octopus.Action.Manual.BlockConcurrentDeployments = "False"
+            Octopus.Action.Manual.Instructions = "Please approve or cancel the deployment of #{Octopus.Project.Name} #{Octopus.Release.Number} to production"
+            Octopus.Action.Manual.ResponsibleTeamIds = "Octopus Managers"
+        }
+        worker_pool_variable = ""
+    }
+}
+
+step "Production Approval - Dev Team Lead" {
+    start_trigger = "StartWithPrevious"
+
+    action {
+        action_type = "Octopus.Manual"
+        environments = ["Approval"]
+        properties = {
+            Octopus.Action.Manual.BlockConcurrentDeployments = "False"
+            Octopus.Action.Manual.Instructions = "Please approve or cancel the deployment of #{Octopus.Project.Name} #{Octopus.Release.Number} to production"
+            Octopus.Action.Manual.ResponsibleTeamIds = "Octopus Managers"
+        }
+        worker_pool_variable = ""
+    }
+}
+
+step "Production Approval - Customer Success Manager" {
+    start_trigger = "StartWithPrevious"
+
+    action {
+        action_type = "Octopus.Manual"
+        environments = ["Approval"]
+        properties = {
+            Octopus.Action.Manual.BlockConcurrentDeployments = "False"
+            Octopus.Action.Manual.Instructions = "Please approve or cancel the deployment of #{Octopus.Project.Name} #{Octopus.Release.Number} to production"
+            Octopus.Action.Manual.ResponsibleTeamIds = "Octopus Managers"
+        }
+        worker_pool_variable = ""
+    }
+}
+
+step "Terraform Apply" {
+    properties = {
+        Octopus.Action.TargetRoles = "webserver"
+    }
+
+    action {
+        excluded_environments = ["Approval"]
+        properties = {
+            Body = "For more information, please see [deployment details](#{Octopus.Web.BaseUrl}#{Octopus.Web.DeploymentLink})!"
+            Octopus.Action.RunOnServer = "false"
+            Octopus.Action.Template.Id = "ActionTemplates-25"
+            Octopus.Action.Template.Version = "3"
+            Timeout = "60"
+            Title = "#{Octopus.Project.Name} #{Octopus.Release.Number} deployed to #{Octopus.Environment.Name}#{if Octopus.Deployment.Tenant.Id} for #{Octopus.Deployment.Tenant.Name}#{/if}"
+        }
+    }
+}
+
+step "Deploy Pet Shop API Container" {
+    properties = {
+        Octopus.Action.TargetRoles = "webserver"
+    }
+
+    action {
+        excluded_environments = ["Approval"]
+        properties = {
+            Octopus.Action.Template.Id = "ActionTemplates-22"
+            Octopus.Action.Template.Version = "4"
+        }
+        worker_pool_variable = ""
+    }
+}
